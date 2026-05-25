@@ -93,7 +93,7 @@ def get_dataloader(data_dir, transform, batch_size=128, num_imgs=None, shuffle=F
     """ Get dataloader for the images in the data_dir. The data_dir must be of the form: input/0/... """
     dataset = ImageFolder(data_dir, transform=transform)
     if num_imgs is not None:
-        dataset = Subset(dataset, np.random.choice(len(dataset), num_imgs, replace=False))
+        dataset = Subset(dataset, np.random.choice(len(dataset), num_imgs, replace=(num_imgs > len(dataset))))
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers, pin_memory=True, drop_last=False, collate_fn=collate_fn)
 
 def pil_imgs_from_folder(folder):
