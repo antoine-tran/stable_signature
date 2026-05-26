@@ -100,7 +100,7 @@ def get_hidden_decoder(num_bits, redundancy=1, num_blocks=7, channels=64):
     return decoder
 
 def get_hidden_decoder_ckpt(ckpt_path):
-    ckpt = torch.load(ckpt_path, map_location="cpu")
+    ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     decoder_ckpt = { k.replace('module.', '').replace('decoder.', '') : v for k,v in ckpt['encoder_decoder'].items() if 'decoder' in k}
     return decoder_ckpt
 
@@ -109,7 +109,7 @@ def get_hidden_encoder(num_bits, num_blocks=4, channels=64):
     return encoder
 
 def get_hidden_encoder_ckpt(ckpt_path):
-    ckpt = torch.load(ckpt_path, map_location="cpu")
+    ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     encoder_ckpt = { k.replace('module.', '').replace('encoder.', '') : v for k,v in ckpt['encoder_decoder'].items() if 'encoder' in k}
     return encoder_ckpt
 
@@ -133,7 +133,7 @@ def get_obj_from_str(string, reload=False):
 
 def load_model_from_config(config, ckpt, verbose=False):
     print(f"Loading model from {ckpt}")
-    pl_sd = torch.load(ckpt, map_location="cpu")
+    pl_sd = torch.load(ckpt, map_location="cpu", weights_only=False)
     if "global_step" in pl_sd:
         print(f"Global Step: {pl_sd['global_step']}")
     sd = pl_sd["state_dict"]
