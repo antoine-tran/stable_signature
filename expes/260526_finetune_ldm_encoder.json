@@ -1,0 +1,50 @@
+{
+    "cmd": "bash -c 'cd /checkpoint/avseal/tuantran/env_srcs/lseal-dc/stable_signature && torchrun --nproc_per_node=8 finetune_ldm_encoder.py \"$@\"' --",
+    "pwd": "/checkpoint/avseal/tuantran/env_srcs/lseal-dc/stable_signature",
+    "preload": "MKL_THREADING_LAYER=GNU",
+    "precmd": [
+        "export PATH=/checkpoint/avseal/tuantran/envs/lseal/bin:$PATH",
+        "export VIDEOSEAL_PATH=/checkpoint/avseal/tuantran/env_srcs/vseal/videoseal-sd",
+        "export AVSEAL_DIR=/checkpoint/avseal/tuantran/env_srcs/lseal/avseal",
+        "export PYTHONPATH=$VIDEOSEAL_PATH:$AVSEAL_DIR:$AVSEAL_DIR/rar:src:$PYTHONPATH"
+    ],
+    "params": {
+        "ldm_config": "sd/stable-diffusion-v-1-4-original/v1-inference.yaml",
+        "ldm_ckpt": "sd/stable-diffusion-v-1-4-original/sd-v1-4-full-ema.ckpt",
+        "wm_ckpt": [
+            "/checkpoint/avseal/tuantran/experiments/latent/260519_sd_vae_vseal_coco/expe/checkpoint600.pth",
+            "/checkpoint/avseal/tuantran/experiments/latent/260520_sd_vae_vseal_coco/_scaling_w=0.75/checkpoint600.pth",
+            "/checkpoint/avseal/tuantran/experiments/latent/260520_sd_vae_vseal_coco/_scaling_w=1.0/checkpoint600.pth"
+        ],
+        "wm_nbits": 64,
+        "train_dir": "/datasets/COCO/022719/train2017",
+        "val_dir": "/datasets/COCO/022719/val2017",
+        "batch_size": 8,
+        "img_size": 512,
+        "steps": 9241,
+        "warmup_steps": 500,
+        "optimizer": "AdamW,lr=5e-4",
+        "lambda_wm": 1.0,
+        "reference_model_weight": 0.0,
+        "num_keys": 1,
+        "log_freq": 50,
+        "save_img_freq": 500,
+        "seed": 0
+    },
+    "machine": {
+        "qos": "h200_comm_shared",
+        "gres": "gpu:8",
+        "nodes": "1",
+        "ntasks": "1",
+        "cpus-per-task": "32",
+        "time": 4000,
+        "mem-per-cpu": "10G"
+    },
+    "meta": {
+        "group": "latent",
+        "name": "260526_finetune_ldm_encoder",
+        "dest-arg": "yes",
+        "dest-name": "output_dir",
+        "args-format": "argparse"
+    }
+}
